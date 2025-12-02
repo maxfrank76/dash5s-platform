@@ -17,7 +17,7 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # Связи
-    audit_records = db.relationship('AuditRecord', backref='editor', lazy='dynamic')
+   # audit_records = db.relationship('AuditRecord', backref='editor', lazy='dynamic')
     feedback_messages = db.relationship('FeedbackMessage', backref='author', lazy='dynamic')
     visit_logs = db.relationship('VisitLog', backref='user', lazy='dynamic')
     

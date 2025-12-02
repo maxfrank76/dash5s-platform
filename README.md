@@ -33,3 +33,32 @@ docker-compose up -d ldap
 ### 3. Запуск приложения
 ```bash
 flask run
+
+dash5s_app/
+├── app.py                          # Точка входа, инициализация ядра
+├── config.py                       # Конфигурация (AD, БД, пути)
+├── requirements.txt                # Зависимости
+├── core/                           # ЯДРО ПРИЛОЖЕНИЯ
+│   ├── __init__.py
+│   ├── auth.py                    # Интеграция AD (LDAP), сессии
+│   ├── models.py                  # Базовые модели БД (User, Log)
+│   ├── admin_views.py             # Панель админа (управление модулями пользователями)
+│   ├── navigation.py              # Динамическое меню на основе доступных модулей
+│   └── utils.py                   # Логгирование, декораторы доступа
+├── modules/                        # МОДУЛИ (PLUGINS)
+│   ├── dashboard/                  # МОДУЛЬ 1: Дашборд 5С
+│   │   ├── __init__.py
+│   │   ├── models.py              # Area, AuditRecord
+│   │   ├── views.py               # Роуты дашборда, внесение аудитов
+│   │   ├── templates/dashboard/*.html
+│   │   └── static/dashboard/*.js/css
+│   ├── feedback/                  # МОДУЛЬ 2: Обратная связь
+│   │   ├── __init__.py
+│   │   ├── models.py              # FeedbackMessage
+│   │   └── views.py
+│   └── improvements/              # МОДУЛЬ 3: Предложения по улучшению (ЗАГЛУШКА)
+│       ├── __init__.py            # Пока содержит только meta-информацию для меню
+│       └── placeholder.html       # Страница "Модуль в разработке"
+├── migrations/                    # Alembic миграции БД (для каждого модуля своя версия)
+├── templates/base.html           # Базовый шаблон с меню и уведомлениями
+└── static/global/                # Глобальные CSS, JS (Chart.js, Bootstrap)

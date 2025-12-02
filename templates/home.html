@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Dash5S - Платформа управления 5С{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row align-items-center">
+        <div class="col-lg-6">
+            <h1 class="display-4 fw-bold mb-4">
+                <span class="text-primary">Dash5S</span> — платформа для внедрения системы 5С
+            </h1>
+            <p class="lead mb-4">
+                Инструмент для повышения эффективности, безопасности и культуры производства. 
+                Визуализация прогресса, аудиты, управление проектами.
+            </p>
+            <div class="d-grid gap-2 d-md-flex">
+                <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg px-4">
+                    <i class="bi bi-box-arrow-in-right"></i> Войти в систему
+                </a>
+                <a href="#features" class="btn btn-outline-secondary btn-lg px-4">
+                    <i class="bi bi-info-circle"></i> Узнать больше
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <img src="https://via.placeholder.com/600x400/0d6efd/ffffff?text=5S+Dashboard" 
+                 alt="Dashboard Preview" class="img-fluid rounded shadow">
+        </div>
+    </div>
+
+    <hr class="my-5">
+
+    <div id="features" class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="display-1 text-primary mb-3">
+                        <i class="bi bi-graph-up"></i>
+                    </div>
+                    <h3 class="card-title">Визуализация</h3>
+                    <p class="card-text">
+                        Радар-диаграммы, графики прогресса, рейтинги участков. 
+                        Вся информация на одном экране.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="display-1 text-success mb-3">
+                        <i class="bi bi-clipboard-check"></i>
+                    </div>
+                    <h3 class="card-title">Аудиты 5С</h3>
+                    <p class="card-text">
+                        Гибкие чек-листы, оценка по критериям 0-1-2, 
+                        история изменений и отслеживание прогресса.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="display-1 text-info mb-3">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h3 class="card-title">Безопасность</h3>
+                    <p class="card-text">
+                        Интеграция с Active Directory, разграничение прав доступа, 
+                        логгирование всех действий.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

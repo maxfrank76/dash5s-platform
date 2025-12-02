@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Обратная связь | Dash5S{% endblock %}
+
+{% block page_title %}
+<i class="bi bi-chat-dots"></i> Обратная связь
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Отправить сообщение администратору</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('feedback.send_message') }}">
+                    <div class="mb-3">
+                        <label class="form-label">Ваше сообщение</label>
+                        <textarea class="form-control" name="message" rows="5" 
+                                  placeholder="Опишите проблему, предложение или задайте вопрос..." 
+                                  required minlength="10"></textarea>
+                        <div class="form-text">
+                            Минимум 10 символов. Сообщения видны только вам и администраторам.
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2 d-md-flex">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send"></i> Отправить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Мои сообщения</h5>
+            </div>
+            <div class="card-body">
+                {% if messages %}
+                <div class="list-group list-group-flush">
+                    {% for msg in messages %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <small class="text-muted">{{ msg.created_at.strftime('%d.%m.%Y %H:%M') }}</small>
+                            <span class="badge bg-{{ 
+                                'success' if msg.status == 'closed' 
+                                else 'info' if msg.status == 'in_progress' 
+                                else 'warning' if msg.status == 'read' 
+                                else 'secondary' 
+                            }}">
+                                {{ 
+                                    'Закрыто' if msg.status == 'closed' 
+                                    else 'В работе' if msg.status == 'in_progress' 
+                                    else 'Прочитано' if msg.status == 'read' 
+                                    else 'Новое' 
+                                }}
+                            </span>
+                        </div>
+                        <p class="mb-1">{{ msg.message[:100] }}{% if msg.message|length > 100 %}...{% endif %}</p>
+                        {% if msg.admin_comment %}
+                        <div class="alert alert-info mt-2 py-2">
+                            <small><strong>Ответ администратора:</strong> {{ msg.admin_comment }}</small>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted text-center my-3">У вас пока нет сообщений</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

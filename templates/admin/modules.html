@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Управление модулями | Dash5S{% endblock %}
+
+{% block page_title %}
+<i class="bi bi-puzzle"></i> Управление модулями
+{% endblock %}
+
+{% block page_actions %}
+<button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addModuleModal">
+    <i class="bi bi-plus-circle"></i> Добавить модуль
+</button>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Название</th>
+                                <th>Системное имя</th>
+                                <th>Статус</th>
+                                <th>Версия</th>
+                                <th>Порядок</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for module in modules %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ module.display_name }}</td>
+                                <td><code>{{ module.name }}</code></td>
+                                <td>
+                                    <span class="badge bg-{{ 'success' if module.is_active else 'secondary' }}">
+                                        {{ 'Активен' if module.is_active else 'Выключен' }}
+                                    </span>
+                                </td>
+                                <td>{{ module.version }}</td>
+                                <td>{{ module.menu_order }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-primary" title="Редактировать">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button class="btn btn-outline-{{ 'warning' if module.is_active else 'success' }}"
+                                                title="{{ 'Выключить' if module.is_active else 'Включить' }}">
+                                            <i class="bi bi-power"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="7" class="text-center">Нет модулей</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно добавления модуля -->
+<div class="modal fade" id="addModuleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Добавление модуля</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label">Системное имя</label>
+                        <input type="text" class="form-control" placeholder="Например: improvements">
+                        <div class="form-text">Латинские буквы, без пробелов</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Отображаемое название</label>
+                        <input type="text" class="form-control" placeholder="Например: Предложения по улучшению">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Порядок в меню</label>
+                        <input type="number" class="form-control" value="500" min="1" max="999">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary">Добавить</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

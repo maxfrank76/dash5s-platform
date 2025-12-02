@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Панель администратора | Dash5S{% endblock %}
+
+{% block page_title %}
+<i class="bi bi-gear"></i> Панель администратора
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Статистика -->
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">Пользователей</h6>
+                        <h2 class="mb-0">{{ user_count }}</h2>
+                    </div>
+                    <i class="bi bi-people" style="font-size: 2rem;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">Активных</h6>
+                        <h2 class="mb-0">{{ active_users }}</h2>
+                    </div>
+                    <i class="bi bi-person-check" style="font-size: 2rem;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">Модулей</h6>
+                        <h2 class="mb-0">{{ g.active_modules|length }}</h2>
+                    </div>
+                    <i class="bi bi-puzzle" style="font-size: 2rem;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">Сегодня</h6>
+                        <h2 class="mb-0">-</h2>
+                    </div>
+                    <i class="bi bi-graph-up" style="font-size: 2rem;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Последние действия -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-clock-history"></i> Последние действия</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Время</th>
+                                <th>Пользователь</th>
+                                <th>Действие</th>
+                                <th>IP-адрес</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in recent_logs %}
+                            <tr>
+                                <td>{{ log.timestamp.strftime('%H:%M:%S') }}</td>
+                                <td>{{ log.user.username if log.user else 'Unknown' }}</td>
+                                <td>{{ log.action }} {{ log.endpoint }}</td>
+                                <td><code>{{ log.ip_address }}</code></td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center">Нет данных</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Быстрые действия -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-lightning"></i> Быстрые действия</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2 d-md-flex">
+                    <a href="{{ url_for('admin.module_management') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-puzzle"></i> Управление модулями
+                    </a>
+                    <a href="#" class="btn btn-outline-success">
+                        <i class="bi bi-list-check"></i> Управление чек-листами
+                    </a>
+                    <a href="#" class="btn btn-outline-info">
+                        <i class="bi bi-people"></i> Пользователи
+                    </a>
+                    <a href="#" class="btn btn-outline-warning">
+                        <i class="bi bi-graph-up"></i> Статистика
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

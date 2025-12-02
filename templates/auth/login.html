@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Вход в систему | Dash5S{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card border-primary">
+            <div class="card-header bg-primary text-white text-center">
+                <h4 class="mb-0"><i class="bi bi-box-arrow-in-right"></i> Вход в систему</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('auth.login') }}">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">
+                            <i class="bi bi-person"></i> Логин (user@domain.ru)
+                        </label>
+                        <input type="text" class="form-control" id="username" name="username" 
+                               placeholder="name@domain.ru" required autofocus>
+                        <div class="form-text">Используйте ваш корпоративный логин</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">
+                            <i class="bi bi-key"></i> Пароль
+                        </label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                        <div class="form-text">Ваш пароль от домена</div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-box-arrow-in-right"></i> Войти
+                        </button>
+                    </div>
+                </form>
+                
+                <hr class="my-4">
+                
+                <div class="alert alert-info">
+                    <h6><i class="bi bi-info-circle"></i> Информация:</h6>
+                    <small>
+                        <ul class="mb-0">
+                            <li>Аутентификация происходит через корпоративный Active Directory</li>
+                            <li>Права доступа определяются членством в группах AD</li>
+                            <li>При первом входе ваш профиль будет создан автоматически</li>
+                        </ul>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

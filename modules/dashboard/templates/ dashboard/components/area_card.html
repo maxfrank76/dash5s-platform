@@ -1,0 +1,91 @@
+<div class="card module-card h-100">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class="bi bi-building"></i> {{ area.name }}
+        </h5>
+        <span class="badge bg-{{ 'success' if area.is_active else 'secondary' }}">
+            {{ 'Активен' if area.is_active else 'Неактивен' }}
+        </span>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-6">
+                <h6 class="text-muted">Текущий балл</h6>
+                <h2 class="{{ 'text-success' if area.current_score >= 1.5 else 'text-warning' if area.current_score >= 1.0 else 'text-danger' }}">
+                    {{ "%.1f"|format(area.current_score) if area.current_score > 0 else "—" }}
+                </h2>
+            </div>
+            <div class="col-6">
+                <h6 class="text-muted">Последний аудит</h6>
+                <p class="mb-0">
+                    {% if area.last_audit %}
+                        Неделя {{ area.last_audit.week_number }}<br>
+                        <small class="text-muted">{{ area.last_audit.timestamp.strftime('%d.%m.%Y') }}</small>
+                    {% else %}
+                        <span class="text-muted">Нет данных</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        
+        <!-- Радар-диаграмма -->
+        <div class="mt-3">
+            <canvas id="radar-{{ area.id }}" class="radar-chart" width="200" height="200"></canvas>
+        </div>
+        
+        <div class="mt-3">
+            <small class="text-muted">
+                {% if area.description %}
+                    {{ area.description[:100] }}{% if area.description|length > 100 %}...{% endif %}
+                {% else %}
+                    <i>Описание отсутствует</i>
+                {% endif %}
+            </small>
+        </div>
+    </div>
+    <div class="card-footer bg-transparent">
+        <div class="d-grid gap-2 d-md-flex">
+            <a href="{{ url_for('dashboard.area_detail', area_id=area.id) }}" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-eye"></i> Подробнее
+            </a>
+            {% if current_user.role in ['Editor', 'Admin'] %}
+            <a href="{{ url_for('dashboard.new_audit', area_id=area.id) }}" class="btn btn-sm btn-outline-success">
+                <i class="bi bi-plus-circle"></i> Аудит
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Загружаем данные для радар-диаграммы
+    fetch('{{ url_for("dashboard.radar_data_api", area_id=area.id) }}')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('radar-{{ area.id }}').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: data,
+                options: {
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 2,
+                            ticks: {
+                                stepSize: 0.5
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    responsive: false,
+                    maintainAspectRatio: false
+                }
+            });
+        });
+});
+</script>

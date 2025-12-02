@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Дашборд 5С | Dash5S{% endblock %}
+
+{% block page_title %}
+<i class="bi bi-speedometer2"></i> Дашборд 5С
+{% endblock %}
+
+{% block page_actions %}
+{% if current_user.role in ['Editor', 'Admin'] %}
+<a href="#" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#newAreaModal">
+    <i class="bi bi-plus-circle"></i> Новый участок
+</a>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<!-- Статистика -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card border-primary">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="text-muted">Участков</h6>
+                        <h3 class="mb-0">{{ total_areas }}</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-buildings text-primary" style="font-size: 2rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card border-success">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="text-muted">Активных</h6>
+                        <h3 class="mb-0">{{ active_areas }}</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-check-circle text-success" style="font-size: 2rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card border-info">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="text-muted">Аудитов (неделя)</h6>
+                        <h3 class="mb-0">{{ audits_this_week }}</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-clipboard-data text-info" style="font-size: 2rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card border-warning">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="text-muted">Средний балл</h6>
+                        <h3 class="mb-0">
+                            {% set total_score = 0 %}
+                            {% set count = 0 %}
+                            {% for area in areas %}
+                                {% if area.current_score > 0 %}
+                                    {% set total_score = total_score + area.current_score %}
+                                    {% set count = count + 1 %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if count > 0 %}
+                                {{ "%.1f"|format(total_score / count) }}
+                            {% else %}
+                                0.0
+                            {% endif %}
+                        </h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-graph-up text-warning" style="font-size: 2rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Карточки участков -->
+<div class="row">
+    {% for area in areas %}
+    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+        {% include 'dashboard/components/area_card.html' %}
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            <h5><i class="bi bi-info-circle"></i> Нет участков</h5>
+            <p>Участки еще не созданы. Создайте первый участок для начала работы.</p>
+            {% if current_user.role in ['Editor', 'Admin'] %}
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newAreaModal">
+                <i class="bi bi-plus-circle"></i> Создать участок
+            </button>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Модальное окно нового участка -->
+<div class="modal fade" id="newAreaModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Новый участок</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Название участка *</label>
+                        <input type="text" class="form-control" placeholder="Например: Сборочный цех" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Код участка *</label>
+                        <input type="text" class="form-control" placeholder="Например: SBORKA" required>
+                        <div class="form-text">Латинские буквы, без пробелов</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Описание</label>
+                        <textarea class="form-control" rows="3" placeholder="Краткое описание участка..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Создать</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='dashboard/js/radar-chart.js') }}"></script>
+{% endblock %}
