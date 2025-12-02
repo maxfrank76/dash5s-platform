@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  ldap:
+    image: osixia/openldap:latest
+    container_name: dash5s-ldap
+    ports:
+      - "389:389"
+      - "636:636"
+    environment:
+      LDAP_ORGANISATION: "Test Company"
+      LDAP_DOMAIN: "test.local"
+      LDAP_BASE_DN: "dc=test,dc=local"
+      LDAP_ADMIN_PASSWORD: "admin"
+      LDAP_CONFIG_PASSWORD: "config"
+      LDAP_TLS: "false"  # явно отключаем TLS
+    volumes:
+      - ./ldap/data:/var/lib/ldap
+      - ./ldap/config:/etc/ldap/slapd.d
+      - ./ldap/ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom
+    networks:
+      - dash5s-network
+
+  phpldapadmin:
+    image: osixia/phpldapadmin:latest
+    container_name: dash5s-phpldapadmin
+    ports:
+      - "8080:80"
+    environment:
+      PHPLDAPADMIN_LDAP_HOSTS: "ldap"
+      PHPLDAPADMIN_HTTPS: "false"
+    depends_on:
+      - ldap
+    networks:
+      - dash5s-network
+
+networks:
+  dash5s-network:
+    driver: bridge
